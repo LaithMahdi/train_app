@@ -1,6 +1,7 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:train/core/cache/app_cache.dart';
 import 'package:train/core/constants/app_color.dart';
 import 'package:train/core/styles/style.dart';
 import 'package:train/core/validation/validation.dart';
@@ -24,6 +25,24 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _loading = false;
   bool _disabled = false;
   bool _obscure = true;
+  final AppCache _cache = AppCache();
+
+  @override
+  void initState() {
+    if (_cache.getIsLoggedIn() == true) {
+      SchedulerBinding.instance.addPostFrameCallback((_) {
+        Navigator.pushReplacementNamed(context, '/home');
+      });
+    }
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _email.dispose();
+    _password.dispose();
+    super.dispose();
+  }
 
   void _toggleObscure() {
     setState(() {
@@ -38,7 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
           _loading = true;
           _disabled = true;
         });
-        final res = await supabase.auth.signInWithPassword(
+        await supabase.auth.signInWithPassword(
           email: _email.text,
           password: _password.text,
         );
@@ -49,7 +68,8 @@ class _LoginScreenState extends State<LoginScreen> {
         });
 
         _formKey.currentState!.reset();
-        // Navigator.pushReplacementNamed(context, '/login');
+        _cache.setIsLoggedIn(true);
+        Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {
       log("Error during resgiter: $e");

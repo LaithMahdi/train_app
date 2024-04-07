@@ -30,6 +30,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool _obscure = true;
   bool _confirmObscure = true;
 
+  @override
+  void dispose() {
+    _email.dispose();
+    _name.dispose();
+    _phone.dispose();
+    _password.dispose();
+    _confirmPassword.dispose();
+    super.dispose();
+  }
+
   void _toggleObscure() {
     setState(() {
       _obscure = _obscure ? false : true;
