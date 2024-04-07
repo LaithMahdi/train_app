@@ -25,11 +25,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
-    getAllTrain();
+    getAllTrains();
     super.initState();
   }
 
-  void getAllTrain() async {
+  void getAllTrains() async {
     setState(() {
       _isLoading = true;
     });
@@ -49,6 +49,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _isLoading = false;
     });
+  }
+
+  void _onTrainTap(String id) {
+    Navigator.pushNamed(context, "/train_detail", arguments: id);
   }
 
   @override
@@ -71,6 +75,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     final train = _trainList[index];
                     return ListTile(
+                      onTap: () => _onTrainTap(train.id!),
                       leading: Image.network(
                         train.image!,
                         loadingBuilder: (context, child, loadingProgress) =>

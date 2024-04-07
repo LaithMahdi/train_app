@@ -4,6 +4,7 @@ class TrainModel {
   final String? image;
   final int? nbPlace;
   final String? createdAt;
+  final double? price;
 
   TrainModel({
     this.id,
@@ -11,6 +12,7 @@ class TrainModel {
     this.image,
     this.nbPlace,
     this.createdAt,
+    this.price,
   });
 
   factory TrainModel.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class TrainModel {
       image: json['image'],
       nbPlace: json['nb_place'],
       createdAt: json['created_at'],
+      price: json['price'],
     );
   }
 
@@ -30,6 +33,7 @@ class TrainModel {
       'image': image,
       'nb_place': nbPlace,
       'created_at': createdAt,
+      'price': price,
     };
   }
 }
