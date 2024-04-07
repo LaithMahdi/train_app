@@ -1,10 +1,9 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:train/core/cache/app_cache.dart';
 import 'package:train/core/constants/app_color.dart';
 import 'package:train/core/styles/style.dart';
-import 'package:train/core/validation/validation.dart';
+import 'package:train/core/functions/validation.dart';
 import 'package:train/main.dart';
 import 'package:train/screens/login/widgets/label.dart';
 import 'package:train/widgets/form/input.dart';
@@ -26,16 +25,6 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _disabled = false;
   bool _obscure = true;
   final AppCache _cache = AppCache();
-
-  @override
-  void initState() {
-    if (_cache.getIsLoggedIn() == true) {
-      SchedulerBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushReplacementNamed(context, '/home');
-      });
-    }
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -69,6 +58,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         _formKey.currentState!.reset();
         _cache.setIsLoggedIn(true);
+        _cache.setUserId(supabase.auth.currentUser!.id);
         Navigator.pushReplacementNamed(context, '/home');
       }
     } catch (e) {

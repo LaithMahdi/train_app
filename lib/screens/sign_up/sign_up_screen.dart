@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:train/core/constants/app_color.dart';
 import 'package:train/core/styles/style.dart';
-import 'package:train/core/validation/validation.dart';
+import 'package:train/core/functions/validation.dart';
 import 'package:train/data/model/user_model.dart';
 import 'package:train/main.dart';
 import 'package:train/screens/login/widgets/label.dart';

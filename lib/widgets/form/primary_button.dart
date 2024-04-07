@@ -41,25 +41,13 @@ class PrimaryButton extends StatelessWidget {
                     fontWeight: FontWeight.w500,
                   ),
                 )
-              : Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                          color: AppColor.primaryColor, strokeWidth: 3),
-                    ),
-                    const SizedBox(width: 10),
-                    Text(
-                      "Loading ...",
-                      style: Style.body14.copyWith(
-                        color: AppColor.white,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
+              : const Center(
+                  child: SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: CircularProgressIndicator(
+                        color: AppColor.primaryColor, strokeWidth: 3),
+                  ),
                 ),
         ),
       ),

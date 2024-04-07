@@ -1,5 +1,5 @@
 class DestinationModel {
-  final int? id;
+  final String? id;
   final DateTime? createdAt;
   final String? startStation;
   final String? endStation;

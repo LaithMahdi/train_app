@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:train/core/constants/app_color.dart';
 import 'package:train/core/styles/style.dart';
-import 'package:train/data/model/train_model.dart';
-
-import '../../main.dart';
+import 'package:train/screens/home/home_view_screen.dart';
+import 'package:train/screens/profile/profile_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,8 +13,11 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
-  List<TrainModel> _trainList = [];
-  bool _isLoading = false;
+  final List<Widget> _pages = [
+    const HomeViewScreen(),
+    Container(color: Colors.blue),
+    const ProfileScreen()
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -24,72 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   @override
-  void initState() {
-    getAllTrains();
-    super.initState();
-  }
-
-  void getAllTrains() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final data = await supabase.from("train").select("*");
-
-      setState(() {
-        _trainList = data.isNotEmpty
-            ? data.map((e) => TrainModel.fromJson(e)).toList()
-            : [];
-        _isLoading = false;
-      });
-    } catch (error) {
-      debugPrint('Error fetching train data: $error');
-    }
-    setState(() {
-      _isLoading = false;
-    });
-  }
-
-  void _onTrainTap(String id) {
-    Navigator.pushNamed(context, "/train_detail", arguments: id);
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: const EdgeInsets.all(20),
-        children: [
-          SizedBox(height: MediaQuery.sizeOf(context).height * .05),
-          Text(
-            "Train List",
-            style: Style.headline20.copyWith(fontWeight: FontWeight.w500),
-          ),
-          _isLoading
-              ? const Center(child: CircularProgressIndicator())
-              : ListView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: _trainList.length,
-                  itemBuilder: (context, index) {
-                    final train = _trainList[index];
-                    return ListTile(
-                      onTap: () => _onTrainTap(train.id!),
-                      leading: Image.network(
-                        train.image!,
-                        loadingBuilder: (context, child, loadingProgress) =>
-                            loadingProgress == null
-                                ? child
-                                : const CircularProgressIndicator(),
-                      ),
-                      title: Text(train.name!),
-                      subtitle: Text("Available seat: ${train.nbPlace}"),
-                    );
-                  },
-                ),
-        ],
-      ),
+      body: _pages[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: _onItemTapped,

@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:train/core/constants/app_color.dart';
+import 'package:train/core/functions/format_time.dart';
 import 'package:train/core/styles/style.dart';
 import 'package:train/data/model/destination_model.dart';
 import 'package:train/data/model/train_model.dart';
@@ -19,6 +22,7 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
   String? _id;
   TrainModel? _train;
   List<DestinationModel>? _destinations;
+  DestinationModel? _selectedDestination;
   bool _isLoading = false;
   @override
   void initState() {
@@ -44,6 +48,9 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
           .select("*")
           .match({"train_id": id});
 
+      log("Data: $data");
+      log("Dest: $dest");
+
       setState(() {
         _train = data.isNotEmpty ? TrainModel.fromJson(data.first) : null;
         _destinations = dest.isNotEmpty
@@ -60,9 +67,25 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
     });
   }
 
-  String formatTime(String time) {
-    final parts = time.split(":");
-    return "${parts[0]}:${parts[1]}";
+  void goToBookTicket() {
+    if (_selectedDestination != null) {
+      Navigator.pushNamed(context, '/book_ticket', arguments: {
+        "train": _train,
+        "destination": _selectedDestination,
+      });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Please select destination"),
+        ),
+      );
+    }
+  }
+
+  handleSelectDestination(DestinationModel destination) {
+    setState(() {
+      _selectedDestination = destination;
+    });
   }
 
   @override
@@ -100,56 +123,67 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
                         style:
                             Style.body16.copyWith(fontWeight: FontWeight.w600),
                       ),
+                      const SizedBox(height: 10),
+                      const Text("Select destination to view time:"),
                       if (_destinations != null)
                         ..._destinations!.map(
-                          (destination) => Container(
-                            margin: const EdgeInsets.symmetric(vertical: 10),
-                            padding: const EdgeInsets.only(bottom: 10),
-                            decoration: const BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                    color: AppColor.grey, width: 0.5),
+                          (destination) => GestureDetector(
+                            onTap: () => handleSelectDestination(destination),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(vertical: 10),
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                color:
+                                    _selectedDestination?.id == destination.id
+                                        ? AppColor.primaryColor.withOpacity(.2)
+                                        : AppColor.white,
+                                border: const Border(
+                                  bottom: BorderSide(
+                                      color: AppColor.grey, width: 0.5),
+                                ),
                               ),
+                              child: Row(children: [
+                                const Icon(Icons.swap_vert_rounded,
+                                    size: 35, color: AppColor.grey),
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    TextInline(
+                                        title: "From : ",
+                                        subtitle:
+                                            destination.startStation ?? ''),
+                                    TextInline(
+                                        title: "To : ",
+                                        subtitle: destination.endStation ?? '')
+                                  ],
+                                ),
+                                const Spacer(),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Icon(Icons.swap_vert_rounded,
+                                        size: 30, color: AppColor.grey),
+                                    const SizedBox(width: 5),
+                                    Column(
+                                      children: [
+                                        Text(
+                                          formatTime(
+                                              destination.startTime ?? ''),
+                                          style: Style.body14
+                                              .copyWith(color: AppColor.black),
+                                        ),
+                                        Text(
+                                          formatTime(destination.endTime ?? ''),
+                                          style: Style.body14
+                                              .copyWith(color: AppColor.black),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ]),
                             ),
-                            child: Row(children: [
-                              const Icon(Icons.swap_vert_rounded,
-                                  size: 35, color: AppColor.grey),
-                              const SizedBox(width: 10),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  TextInline(
-                                      title: "From : ",
-                                      subtitle: destination.startStation ?? ''),
-                                  TextInline(
-                                      title: "To : ",
-                                      subtitle: destination.endStation ?? '')
-                                ],
-                              ),
-                              const Spacer(),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const Icon(Icons.swap_vert_rounded,
-                                      size: 30, color: AppColor.grey),
-                                  const SizedBox(width: 5),
-                                  Column(
-                                    children: [
-                                      Text(
-                                        formatTime(destination.startTime ?? ''),
-                                        style: Style.body14
-                                            .copyWith(color: AppColor.black),
-                                      ),
-                                      Text(
-                                        formatTime(destination.endTime ?? ''),
-                                        style: Style.body14
-                                            .copyWith(color: AppColor.black),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ]),
                           ),
                         ),
                     ],
@@ -160,12 +194,13 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
               ],
             ),
       bottomNavigationBar: Container(
-        height: 80,
+        height: 90,
         padding: const EdgeInsets.all(15),
         child: Row(
           children: [
             Expanded(
                 child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text("Price:", style: Style.body12),
@@ -176,7 +211,8 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
               ],
             )),
             Expanded(
-              child: PrimaryButton(name: "Book Ticket", onPressed: () {}),
+              child:
+                  PrimaryButton(name: "Book Ticket", onPressed: goToBookTicket),
             )
           ],
         ),

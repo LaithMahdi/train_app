@@ -12,12 +12,14 @@ class Input extends StatelessWidget {
     this.validator,
     this.readOnly,
     this.keyboardType,
+    this.onChanged,
   });
 
   final String hintText;
   final TextInputType? keyboardType;
   final TextEditingController controller;
   final String? Function(String? value)? validator;
+  final void Function(String value)? onChanged;
   final bool? obscure;
   final Widget? suffixIcon;
   final bool? readOnly;
@@ -32,6 +34,7 @@ class Input extends StatelessWidget {
       keyboardType: keyboardType ?? TextInputType.text,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       style: Style.body14.copyWith(color: AppColor.black),
+      onChanged: onChanged,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(15),
         hintText: hintText,

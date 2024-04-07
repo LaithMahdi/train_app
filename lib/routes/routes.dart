@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../screens/book_ticket/bool_ticket_screen.dart';
 import '../screens/home/home_screen.dart';
 import '../screens/login/login_screen.dart';
 import '../screens/sign_up/sign_up_screen.dart';
@@ -11,4 +12,5 @@ Map<String, Widget Function(BuildContext context)> routes = {
   '/register': (context) => const SignUpScreen(),
   '/home': (context) => const HomeScreen(),
   '/train_detail': (context) => const TrainDetailScreen(),
+  '/book_ticket': (context) => const BoolTicketScreen(),
 };
