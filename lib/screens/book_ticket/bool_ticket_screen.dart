@@ -24,7 +24,7 @@ class BoolTicketScreen extends StatefulWidget {
 class _BoolTicketScreenState extends State<BoolTicketScreen> {
   TrainModel? _train;
   DestinationModel? _selectedDestination;
-  double? _price = 0.0;
+  double _price = 0.0;
   final TextEditingController _nbPlace = TextEditingController(text: "0");
   final TextEditingController _nbPersonHond = TextEditingController(text: "0");
   bool _isHodicap = false;
@@ -39,7 +39,7 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
             ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
         _train = arguments["train"] as TrainModel?;
         _selectedDestination = arguments["destination"] as DestinationModel?;
-        _price = _train?.price;
+        _price = _selectedDestination?.price ?? 0.0;
       });
     });
 
@@ -52,11 +52,11 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
         int.tryParse(_nbPersonHond.text) ?? 0;
 
     setState(() {
-      double originalPrice = _train!.price! * numberOfPersons;
+      double originalPrice = _selectedDestination!.price! * numberOfPersons;
 
       if (_isHodicap) {
         final double handicappedPrice =
-            _train!.price! * 0.5 * numberOfHandicappedPersons;
+            _selectedDestination!.price! * 0.5 * numberOfHandicappedPersons;
         originalPrice -= handicappedPrice;
       }
 
@@ -69,7 +69,7 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
       _isHodicap = value;
       if (!value) {
         _nbPersonHond.text = "0";
-        _price = _train!.price! * int.tryParse(_nbPlace.text)!.toDouble();
+        // _price = _train!.price! * int.tryParse(_nbPlace.text)!.toDouble();
       }
     });
   }
@@ -161,11 +161,12 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
             const SizedBox(height: 10),
             TextInline(
                 title: "Ticket Price : ",
-                subtitle: "${_train?.price!.toStringAsFixed(3)} TND"),
+                subtitle:
+                    "${_selectedDestination?.price!.toStringAsFixed(3)} TND"),
             const SizedBox(height: 10),
             TextInline(
                 title: "Total Price : ",
-                subtitle: "${_price!.toStringAsFixed(3)} TND"),
+                subtitle: "${_price.toStringAsFixed(3)} TND"),
             const SizedBox(height: 10),
             const Divider(),
             const SizedBox(height: 5),
@@ -229,7 +230,7 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
               children: [
                 Text("Total Price:", style: Style.body12),
                 Text(
-                  "${_price?.toStringAsFixed(3) ?? 0.0} TND",
+                  "${_price.toStringAsFixed(3)} TND",
                   style: Style.headline20.copyWith(fontSize: 17),
                 ),
               ],

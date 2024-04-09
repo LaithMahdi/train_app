@@ -5,6 +5,7 @@ class DestinationModel {
   final String? endStation;
   final String? startTime;
   final String? endTime;
+  final double? price;
   final String? trainId;
 
   DestinationModel({
@@ -14,6 +15,7 @@ class DestinationModel {
     this.endStation,
     this.startTime,
     this.endTime,
+    this.price,
     this.trainId,
   });
 
@@ -25,6 +27,7 @@ class DestinationModel {
       endStation: json['end_station'],
       startTime: json['start_time'],
       endTime: json['end_time'],
+      price: json['price'].toDouble(),
       trainId: json['train_id'],
     );
   }
@@ -35,6 +38,7 @@ class DestinationModel {
       'created_at': createdAt?.toIso8601String(),
       'start_station': startStation,
       'end_station': endStation,
+      'price': price,
       // 'start_time':
       //     startTime != null ? '${startTime!.hour}:${startTime!.minute}' : null,
       // 'end_time':

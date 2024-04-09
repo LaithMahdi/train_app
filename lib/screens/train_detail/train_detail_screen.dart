@@ -211,7 +211,7 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
               children: [
                 Text("Price:", style: Style.body12),
                 Text(
-                  "${_train?.price?.toStringAsFixed(3) ?? 0.0} TND",
+                  "${_selectedDestination?.price?.toStringAsFixed(3) ?? 0.0} TND",
                   style: Style.headline20.copyWith(fontSize: 17),
                 ),
               ],
