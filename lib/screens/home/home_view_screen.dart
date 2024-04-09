@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:train/core/styles/style.dart';
 import 'package:train/data/model/train_model.dart';
 import 'package:train/main.dart';
+import 'package:train/widgets/snackbar/snackbar.dart';
 
 class HomeViewScreen extends StatefulWidget {
   const HomeViewScreen({super.key});
@@ -27,7 +28,7 @@ class _HomeViewScreenState extends State<HomeViewScreen> {
 
     try {
       final data = await supabase.from("train").select("*");
-
+      debugPrint("Data: $data");
       setState(() {
         _trainList = data.isNotEmpty
             ? data.map((e) => TrainModel.fromJson(e)).toList()
@@ -36,6 +37,12 @@ class _HomeViewScreenState extends State<HomeViewScreen> {
       });
     } catch (error) {
       debugPrint('Error fetching train data: $error');
+
+      showSnackbar(
+        context: context,
+        isError: true,
+        message: "Error fetching train data !",
+      );
     }
     setState(() {
       _isLoading = false;

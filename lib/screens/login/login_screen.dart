@@ -9,6 +9,7 @@ import 'package:train/screens/login/widgets/label.dart';
 import 'package:train/widgets/form/input.dart';
 import 'package:train/widgets/form/primary_button.dart';
 import 'package:train/widgets/logo/logo.dart';
+import 'package:train/widgets/snackbar/snackbar.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -63,11 +64,12 @@ class _LoginScreenState extends State<LoginScreen> {
       }
     } catch (e) {
       log("Error during resgiter: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Error during login. Please try again later."),
-        ),
+      showSnackbar(
+        context: context,
+        isError: true,
+        message: "Error during login. Please try again.",
       );
+
       setState(() {
         _loading = false;
         _disabled = false;

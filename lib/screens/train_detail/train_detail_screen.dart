@@ -10,6 +10,7 @@ import 'package:train/data/model/train_model.dart';
 import 'package:train/main.dart';
 import 'package:train/screens/train_detail/widgets/text_inline.dart';
 import 'package:train/widgets/form/primary_button.dart';
+import 'package:train/widgets/snackbar/snackbar.dart';
 
 class TrainDetailScreen extends StatefulWidget {
   const TrainDetailScreen({super.key});
@@ -60,6 +61,11 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
         _isLoading = false;
       });
     } catch (error) {
+      showSnackbar(
+        context: context,
+        isError: true,
+        message: "Error fetching train data !",
+      );
       debugPrint('Error fetching train data: $error');
     }
     setState(() {
@@ -74,10 +80,10 @@ class _TrainDetailScreenState extends State<TrainDetailScreen> {
         "destination": _selectedDestination,
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Please select destination"),
-        ),
+      showSnackbar(
+        context: context,
+        isError: true,
+        message: "Please select destination !",
       );
     }
   }

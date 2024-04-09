@@ -22,7 +22,7 @@ class TrainModel {
       image: json['image'],
       nbPlace: json['nb_place'],
       createdAt: json['created_at'],
-      price: json['price'],
+      price: json['price'].toDouble(),
     );
   }
 

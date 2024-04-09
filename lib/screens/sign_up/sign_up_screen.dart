@@ -9,6 +9,7 @@ import 'package:train/screens/login/widgets/label.dart';
 import 'package:train/widgets/form/input.dart';
 import 'package:train/widgets/form/primary_button.dart';
 import 'package:train/widgets/logo/logo.dart';
+import 'package:train/widgets/snackbar/snackbar.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -75,21 +76,20 @@ class _SignUpScreenState extends State<SignUpScreen> {
           _loading = false;
           _disabled = false;
         });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Sign-up successful. Please login."),
-          ),
-        );
+        showSnackbar(
+            context: context, message: "Sign-up successful. Please login.");
+        _formKey.currentState!.reset();
         _formKey.currentState!.reset();
         Navigator.pushReplacementNamed(context, '/login');
       }
     } catch (e) {
       log("Error during sign-up: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("An error occurred during sign-up. Please try again."),
-        ),
-      );
+
+      showSnackbar(
+          context: context,
+          isError: true,
+          message: "An error occurred during sign-up. Please try again.");
+
       setState(() {
         _loading = false;
         _disabled = false;

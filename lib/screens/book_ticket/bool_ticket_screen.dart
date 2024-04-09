@@ -12,6 +12,7 @@ import 'package:train/main.dart';
 import 'package:train/screens/train_detail/widgets/text_inline.dart';
 import 'package:train/widgets/form/input.dart';
 import 'package:train/widgets/form/primary_button.dart';
+import 'package:train/widgets/snackbar/snackbar.dart';
 
 class BoolTicketScreen extends StatefulWidget {
   const BoolTicketScreen({super.key});
@@ -24,7 +25,7 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
   TrainModel? _train;
   DestinationModel? _selectedDestination;
   double? _price = 0.0;
-  final TextEditingController _nbPlace = TextEditingController(text: "1");
+  final TextEditingController _nbPlace = TextEditingController(text: "0");
   final TextEditingController _nbPersonHond = TextEditingController(text: "0");
   bool _isHodicap = false;
   bool _loading = false;
@@ -77,11 +78,12 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
     try {
       final int? numberOfPersons = int.tryParse(_nbPlace.text);
       if (numberOfPersons == null || numberOfPersons == 0) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Please enter a valid number of persons."),
-          ),
+        showSnackbar(
+          context: context,
+          isError: true,
+          message: "Please enter a valid number of persons.",
         );
+
         return;
       }
 
@@ -106,20 +108,20 @@ class _BoolTicketScreenState extends State<BoolTicketScreen> {
         _loading = false;
         _disabled = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Success booking ticket. Thank you!"),
-        ),
-      );
+
+      showSnackbar(
+          context: context, message: "Success booking ticket. Thank you!");
 
       Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
       log("Error during booking: $e");
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Error during booking. Please try again."),
-        ),
+
+      showSnackbar(
+        context: context,
+        isError: true,
+        message: "Error during booking. Please try again.",
       );
+
       setState(() {
         _loading = false;
         _disabled = false;
